@@ -659,7 +659,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   camera: {fileID: 519420031}
   minCameraSize: 4
-  maxCameraSize: 10
+  maxCameraSize: 20
   moveSpeed: 30
 --- !u!20 &519420031
 Camera:

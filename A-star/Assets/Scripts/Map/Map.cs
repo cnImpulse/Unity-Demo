@@ -107,7 +107,7 @@ public class Map : MonoBehaviour
     [HideInInspector] public GridType selectType = GridType.None;
 
 
-    GridUnit last = null;
+    public GridUnit last = null;
     //通过点击设置网格类型
     private void SetGridType(GridType selectType)
     {
@@ -139,6 +139,9 @@ public class Map : MonoBehaviour
     {
         List<GridUnitData> path, searched;
         Navigator.Instance.Navigate(this, from.gridUnitData, to.gridUnitData, out path, out searched);
+
+        from.Refresh();
+        to.Refresh();
 
         /*
         for (int i = 1; i < path.Count-1; ++i)

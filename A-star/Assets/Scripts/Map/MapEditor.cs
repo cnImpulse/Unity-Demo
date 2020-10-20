@@ -20,6 +20,7 @@ public class MapEditor : MonoBehaviour
 
             default: Map.Instance.selectType = GridType.None;break;
         }
+        Map.Instance.last = null;
     }
 
     //开始导航

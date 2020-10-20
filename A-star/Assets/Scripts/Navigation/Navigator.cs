@@ -172,6 +172,7 @@ public class Navigator
             open.Remove(nowGrid);
 
             map.gridUnits[nowGrid.thisGrid.row, nowGrid.thisGrid.column].SetColor(Color.green);
+            Debug.Log(nowGrid.thisGrid.row + "|" + nowGrid.thisGrid.column + "      " + nowGrid.G + ',' + nowGrid.H + ',' + nowGrid.F);
 
             //4.获取当前节点的所有可到达节点
             List<GridUnitData> neighbor = map.currentMapData.GetNeighbor(nowGrid.thisGrid);
@@ -188,7 +189,7 @@ public class Navigator
 
                 t = Exits(open, neighbor[i]);
                 int G = nowGrid.G + 1;
-                int H = to.Distance(nowGrid.thisGrid);
+                int H = to.Distance(neighbor[i]);
                 //4.2 如果该节点不在open中,计算G,H值,设置父节点为当前节点,加入open列表
                 if (t == null)
                 {
