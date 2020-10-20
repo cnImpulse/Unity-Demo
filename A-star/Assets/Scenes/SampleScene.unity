@@ -613,6 +613,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d06ac2a27a5f2344888f948300c7c921, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  width: 40
+  height: 72
 --- !u!4 &344844043
 Transform:
   m_ObjectHideFlags: 0
@@ -659,7 +661,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   camera: {fileID: 519420031}
   minCameraSize: 4
-  maxCameraSize: 20
+  maxCameraSize: 40
   moveSpeed: 30
 --- !u!20 &519420031
 Camera:
@@ -2139,6 +2141,7 @@ MonoBehaviour:
   gridUnitPrefab: {fileID: 5668816480626398472, guid: 52f8b24394bda9447bbee50061c10c4d,
     type: 3}
   selectType: 2
+  last: {fileID: 0}
 --- !u!4 &1410597968
 Transform:
   m_ObjectHideFlags: 0

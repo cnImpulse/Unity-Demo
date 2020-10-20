@@ -24,8 +24,8 @@ public class Map : MonoBehaviour
         instance = this;
     }
 
-    public MapData currentMapData;
-    public GridUnit[,] gridUnits;
+    private MapData currentMapData;
+    private GridUnit[,] gridUnits;
 
     [SerializeField] private CameraControl mapCamera;
     [SerializeField] private Transform gridUnitRoot;
@@ -79,10 +79,11 @@ public class Map : MonoBehaviour
         mapCamera.ResetCamera();
     }
 
+    bool canClicked = true;
     //点击单元格
     private GridUnit SelectGrid()
     {
-        if (!Input.GetMouseButton(0)|| EventSystem.current.IsPointerOverGameObject())
+        if (!canClicked||!Input.GetMouseButton(0)|| EventSystem.current.IsPointerOverGameObject())
             return null;
         Vector3 clickPos = mapCamera.camera.ScreenToWorldPoint(Input.mousePosition);
         clickPos.z = 0;
@@ -132,23 +133,39 @@ public class Map : MonoBehaviour
         }
     }
 
+    //起点终点
     private GridUnit from, to;
+    //存放导航结果
+    List<GridUnitData> path = default, searched = default;
+    int index = 0;
 
     //导航测试
     public void NavigateTest()
     {
-        List<GridUnitData> path, searched;
-        Navigator.Instance.Navigate(this, from.gridUnitData, to.gridUnitData, out path, out searched);
+        index = 0;
+        Navigator.Instance.Navigate(currentMapData, from.gridUnitData, to.gridUnitData, out path, out searched);
+        Debug.Log("over");
+    }
 
-        from.Refresh();
-        to.Refresh();
-
-        /*
-        for (int i = 1; i < path.Count-1; ++i)
+    //导航动画
+    //注 : 这个函数写的相当丑,但我懒得改了
+    private void Anim()
+    {
+        canClicked = true;
+        if ((searched == null && path == null) || index > searched.Count + path.Count)
+            return;
+        canClicked = false;
+        if (index > 0 && index < searched.Count)
+            gridUnits[searched[index].row, searched[index].column].SetColor(Color.green);
+        else
         {
-            gridUnits[path[i].row, path[i].column].SetColor(Color.yellow);
+            int i = index - searched.Count;
+            if (i > 0 && i < path.Count - 1)
+            {
+                gridUnits[path[i].row, path[i].column].SetColor(Color.cyan);
+            }
         }
-        */
+        ++index;
     }
 
     //刷新整个地图
@@ -166,5 +183,7 @@ public class Map : MonoBehaviour
     private void Update()
     {
         SetGridType(selectType);
+        //播放导航动画
+        Anim();
     }
 }

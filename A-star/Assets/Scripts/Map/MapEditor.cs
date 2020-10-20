@@ -7,6 +7,7 @@ public class MapEditor : MonoBehaviour
     public void MapReset()
     {
         Map.Instance.Reset();
+        Map.Instance.last = null;
     }
 
     //设置单元格类型
