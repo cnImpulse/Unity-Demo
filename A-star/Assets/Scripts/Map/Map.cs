@@ -24,8 +24,8 @@ public class Map : MonoBehaviour
         instance = this;
     }
 
-    private MapData currentMapData;
-    private GridUnit[,] gridUnits;
+    public MapData currentMapData;
+    public GridUnit[,] gridUnits;
 
     [SerializeField] private CameraControl mapCamera;
     [SerializeField] private Transform gridUnitRoot;
@@ -82,13 +82,11 @@ public class Map : MonoBehaviour
     //点击单元格
     private GridUnit SelectGrid()
     {
-        if (!Input.GetMouseButtonDown(0)|| EventSystem.current.IsPointerOverGameObject())
+        if (!Input.GetMouseButton(0)|| EventSystem.current.IsPointerOverGameObject())
             return null;
         Vector3 clickPos = mapCamera.camera.ScreenToWorldPoint(Input.mousePosition);
         clickPos.z = 0;
         GridUnit clicked = GetClickedGrid(clickPos);
-        if (!clicked)
-            return null;
         return clicked;
     }
 
@@ -108,11 +106,13 @@ public class Map : MonoBehaviour
 
     [HideInInspector] public GridType selectType = GridType.None;
 
+
+    GridUnit last = null;
     //通过点击设置网格类型
     private void SetGridType(GridType selectType)
     {
         GridUnit clicked = SelectGrid();
-        if (clicked)
+        if (clicked&&last!=clicked)
         {
             clicked.gridUnitData.gridType = selectType;
             if (selectType == GridType.From)
@@ -128,6 +128,7 @@ public class Map : MonoBehaviour
                 to = clicked;
             }
             Refresh();
+            last = clicked;
         }
     }
 
@@ -137,12 +138,14 @@ public class Map : MonoBehaviour
     public void NavigateTest()
     {
         List<GridUnitData> path, searched;
-        Navigator.Instance.Navigate(currentMapData, from.gridUnitData, to.gridUnitData, out path, out searched);
+        Navigator.Instance.Navigate(this, from.gridUnitData, to.gridUnitData, out path, out searched);
 
+        /*
         for (int i = 1; i < path.Count-1; ++i)
         {
             gridUnits[path[i].row, path[i].column].SetColor(Color.yellow);
         }
+        */
     }
 
     //刷新整个地图

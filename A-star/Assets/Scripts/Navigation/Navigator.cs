@@ -106,19 +106,19 @@ public class Navigator
     ///<summary>
     ///导航
     ///</summary>
-    ///<param name="mapData">地图数据</param>
+    ///<param name="map">地图数据</param>
     ///<param name="from">起点</param>
     ///<param name="to">终点</param>
     ///<param name="path">路径</param>
     ///<param name="searched">搜索过但为采用的节点</param>
-    public bool Navigate(MapData mapData, GridUnitData from, GridUnitData to, out List<GridUnitData> path, out List<GridUnitData> searched)
+    public bool Navigate(Map map, GridUnitData from, GridUnitData to, out List<GridUnitData> path, out List<GridUnitData> searched)
     {
         //输出参数赋初值
         path = new List<GridUnitData>();
         searched = new List<GridUnitData>();
 
         //没有地图则结束导航
-        if (mapData == null)
+        if (map == null)
         {
             Debug.Log("mapData is null!");
             return false;
@@ -158,20 +158,23 @@ public class Navigator
 
             //3.从open列表取出F值最小的节点,将其设为当前节点,并加入close列表中
             NavigationData nowGrid = open[0];
-            int minF = open[0].F;
+            int minF = open[0].F, minH = open[0].H;
             for(int i = 1; i < open.Count; ++i)
             {
-                if (open[i].F < minF)
+                if (open[i].F < minF || (open[i].F == minF && open[i].H < minH)) 
                 {
                     nowGrid = open[i];
                     minF = open[i].F;
+                    minH = open[i].H;
                 }
             }
             close.Add(nowGrid);
             open.Remove(nowGrid);
 
+            map.gridUnits[nowGrid.thisGrid.row, nowGrid.thisGrid.column].SetColor(Color.green);
+
             //4.获取当前节点的所有可到达节点
-            List<GridUnitData> neighbor = mapData.GetNeighbor(nowGrid.thisGrid);
+            List<GridUnitData> neighbor = map.currentMapData.GetNeighbor(nowGrid.thisGrid);
             //对于每个节点
             for(int i = 0; i < neighbor.Count; ++i)
             {
@@ -184,7 +187,7 @@ public class Navigator
                 }
 
                 t = Exits(open, neighbor[i]);
-                int G = from.Distance(nowGrid.thisGrid);
+                int G = nowGrid.G + 1;
                 int H = to.Distance(nowGrid.thisGrid);
                 //4.2 如果该节点不在open中,计算G,H值,设置父节点为当前节点,加入open列表
                 if (t == null)
@@ -199,7 +202,8 @@ public class Navigator
                     t.H = H;
                     t.preGrid = nowGrid;
                 }
-                
+
+                map.gridUnits[neighbor[i].row, neighbor[i].column].SetColor(Color.yellow);
             }
         }
         return false;
